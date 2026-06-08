@@ -42,11 +42,11 @@ Off-campus housing near Georgia Tech. This knowledge is valuable because there h
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
-800 tokens
+250 tokens
 **Overlap:**
-150 tokens
+40 tokens
 **Reasoning:**
-The dataset is a mix of structured stuff (like rental rate tables) and unstructured Reddit comments. An 800-token chunk is big enough to be able to grab a long Reddit comment without cutting it off in the middle. The 150-token overlap is to make sure the building name doesn't get cut off (if the name of the complex is at the beginning, want to make sure any reviews are captured in the same chunk).
+The dataset is a mix of structured stuff (like rental rate tables) and unstructured Reddit comments. A 250-token chunk is big enough to be able to grab a long Reddit comment without cutting it off in the middle. The 40-token overlap is to make sure the building name doesn't get cut off (if the name of the complex is at the beginning, want to make sure any reviews are captured in the same chunk).
 ---
 
 ## Retrieval Approach
