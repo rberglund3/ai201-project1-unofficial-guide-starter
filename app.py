@@ -102,7 +102,8 @@ with gr.Blocks(title="GT Off-Campus Housing Companion") as demo:
                     "the_standard",
                     "square_on_fifth",
                     "inspire",
-                    "reddit_home_park"
+                    "reddit_home_park",
+                    "Floor_Plans _ Hub_Atlanta.html"
                 ],
                 value="Search All",
                 label="Filter by Source (Optional)"

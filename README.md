@@ -100,7 +100,7 @@ Source citatioins are programtically extracted from the vector database's metada
 | 1 | What's the cheapest 4-bedroom at The Rambler right now? | Should pull the starting price from the floor plan data | The cheapest 4-bedroom options are The Carlyle and The Roosevelt, both starting at $1,369* and $1,479 respectively, and The Ivy and The Pearl, starting at $1,489 and $1,399* respectively. The Pearl is the cheapest option at $1,399*. | Relevant | Accurate
 | 2 | Which apartment complexes are actually less than a 5-minute walk to campus? | Should list Inspire Atlanta and SQ5 based on location specs | I am sorry, but the provided documents do not contain enough information to answer this question. | Off-target | Inaccurate
 | 3 | What is the worst thing about living at The Standard based on Reddit? | Should synthesize Reddit data mentioning management or maintenance issues | Listed complaints from Reddit in response | Relevant | Accurate
-| 4 | Does Hub Atlanta do individual leases? | Should confirm they do individual leasing based on FAQ |
+| 4 | Does Hub Atlanta do individual leases? | Should confirm they do individual leasing based on FAQ | I am sorry, but the provided documents do not contain enough information to answer this question. | Off-target | Inaccurate
 | 5 | Is Home Park better than Midtown high-rises? | Should compare cheaper rent in Home Park with the luxury amenities/higher costs of Midtown | I am sorry, but the provided documents do not contain enough information to answer this question. | Off-target | Inaccurate
 
 **Retrieval quality:** Relevant / Partially relevant / Off-target
@@ -122,13 +122,13 @@ Source citatioins are programtically extracted from the vector database's metada
      results from an unrelated review" is an explanation. -->
 
 **Question that failed:**
-
+Which apartment complexes are actually less than a 5-minute walk to campus?
 **What the system returned:**
-
+"I am sorry, but the provided documents do not contain enough information to answer this question."
 **Root cause (tied to a specific pipeline stage):**
-
+Failure at vector retrieval stage.
 **What you would change to fix it:**
-
+I would modify the ingestion pipeline to extract proximity keywords and metrics during parsing and store them as structured metadata tags. That way, when a user asks a geographic question, the system can parse the numerical query and eecute a metadata pre-filter before performing the semantic vector calculations.
 ---
 
 ## Spec Reflection
@@ -137,9 +137,9 @@ Source citatioins are programtically extracted from the vector database's metada
      Answer both questions with at least 2–3 sentences each. -->
 
 **One way the spec helped you during implementation:**
-
+The requirement to document at least one failure case helped me realize our assignment is not meant to work flawlessly.
 **One way your implementation diverged from the spec, and why:**
-
+I ended up adding a dropdown metadata filter alongside the input text box as I was running into issues with entity confusion.
 ---
 
 ## AI Usage
@@ -155,12 +155,12 @@ Source citatioins are programtically extracted from the vector database's metada
 
 **Instance 1**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* I encountered an AttributeError when BeautifulSoup attempted to parse a massive HTML file containing malformed nodes. I asked Gemini to help me write a safe text-extraction loop.
+- *What it produced:* It produced a generic try/except block designed to swallow the error and continue.
+- *What I changed or overrode:* I overrode this approach because swallowing errors is poor practice. Instead, I used a stricter hasattr(element, "attrs") check to bypass the junk nodes rather than relying on exception handling.
 
 **Instance 2**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* I prompted Claude to generate the embed_and_retrieve.py script using the native ChromaDB Python client instead of using LangChain wrappers.
+- *What it produced:* It generated a script that assumed the .query() method returned a flat list of dictionaries, which caused a terminal crash when I attempted to print the results.
+- *What I changed or overrode:* I debugged the crash and manually rewrote the output loop to extract documents[0] and metadatas[0] to process the results correctly.
