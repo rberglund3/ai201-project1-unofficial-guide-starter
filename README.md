@@ -14,6 +14,9 @@
      Example: "Student reviews of CS professors at [university] — useful because official
      course descriptions don't reflect teaching style, exam difficulty, or workload." -->
 
+Off-campus housing near Georgia Tech. This knowledge is valuable because there have been a lot of new student housing complexes that have been built recently. A lot of them have several issues which is not immediately obvious so this could help students make a more informed decision.
+
+
 ---
 
 ## Document Sources
@@ -22,18 +25,18 @@
      Be specific: include URLs, subreddit names, forum thread titles, or file names.
      Aim for variety — sources that together cover different subtopics or perspectives. -->
 
-| # | Source | Type | URL or file path |
-|---|--------|------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| # | Source | Description | URL or location |
+|---|--------|-------------|-----------------|
+| 1 | r/gatech subreddit| megathreads and search results for     "off-campus housing" containing student reviews | reddit.com/r/gatech |
+| 2 | Rambler website | official website for one of the newest student housing complexes | rambleratlanta.com |
+| 3 | Inspire Atlanta website | official website for Inspire housing complex | liveatinspireatl.com |
+| 4 | Hub Atlanta website| official website for Hub Atlanta | huboncampus.com/atlanta |
+| 5 | Square on Fifth | official website for Square on Fifth complex | squareonfifth.com |
+| 6 | The Standard Atlanta | official website for the Standard | landmarkproperties.com/property/the-standard-at-atlanta |
+| 7 | r/ATLHousing subreddit | safety reviews, info on rental rates, and neighborhood comparisons | reddit.com/r/ATLHousing |
+| 8 | GT Off-Campus Housing Resources | official university site on tenant rights and neighborhood safety | housing.gatech.edu |
+| 9 | Google Maps Reviews | scraped reviews for specific complexes to cross-reference with Reddit complaints | Google Maps API / Scraped Data |
+| 10 | Standard lease agreements | examples of student housing leases to go over guarantor requirements/fine print | Local property management PDFs |
 
 ---
 
@@ -47,13 +50,13 @@
      - What your final chunk count was across all documents -->
 
 **Chunk size:**
-
+250 tokens
 **Overlap:**
-
+40 tokens
 **Why these choices fit your documents:**
-
+A 250-token chunk is large enough to capture an entire Reddit comment without cutting them off. The 40-token overlap was important for the HTML pricing tables as it ensured if an apartment building's name was at the top, the context would bleed into the next chunk.
 **Final chunk count:**
-
+86
 ---
 
 ## Embedding Model
@@ -65,9 +68,10 @@
      latency, and local vs. API-hosted. -->
 
 **Model used:**
-
+sentence-transformers/all-MiniLM-L6-v2 via native ChromaDB
 **Production tradeoff reflection:**
-
+If this were to be deployed to thousands of students, the model I used would help keep cloud compute costs at zero since it runs locally with minimal latency.
+However, its small context window and semantic simplicity lead to a lot of entity confusion. So if cost wasn't a constraint, I might upgrade to a commercial API to help resolve these issues.
 ---
 
 ## Grounded Generation
@@ -80,9 +84,9 @@
      the mechanism. -->
 
 **System prompt grounding instruction:**
-
+"You are an expert, highly objective assistant helping Georgia Tech students find off-campus housing. Your task is to answer the user's question using ONLY the provided document chunks below. CRITICAL RULES: 1. Base your answer strictly on the text provided. Do NOT use outside knowledge, general training assumptions, or extrapolate. 2. If the provided document chunks do not contain the answer, you must state exactly: 'I am sorry, but the provided documents do not contain enough information to answer this question.'"
 **How source attribution is surfaced in the response:**
-
+Source citatioins are programtically extracted from the vector database's metadata output. The pipeline aggregates the source names and adds them to a text box below the generated answer.
 ---
 
 ## Evaluation Report
@@ -93,13 +97,13 @@
 
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
 |---|----------|-----------------|------------------------------|-------------------|-------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | What's the cheapest 4-bedroom at The Rambler right now? | Should pull the starting price from the floor plan data | The cheapest 4-bedroom options are The Carlyle and The Roosevelt, both starting at $1,369* and $1,479 respectively, and The Ivy and The Pearl, starting at $1,489 and $1,399* respectively. The Pearl is the cheapest option at $1,399*. | Relevant | Accurate
+| 2 | Which apartment complexes are actually less than a 5-minute walk to campus? | Should list Inspire Atlanta and SQ5 based on location specs | I am sorry, but the provided documents do not contain enough information to answer this question. | Off-target | Inaccurate
+| 3 | What is the worst thing about living at The Standard based on Reddit? | Should synthesize Reddit data mentioning management or maintenance issues | Listed complaints from Reddit in response | Relevant | Accurate
+| 4 | Does Hub Atlanta do individual leases? | Should confirm they do individual leasing based on FAQ |
+| 5 | Is Home Park better than Midtown high-rises? | Should compare cheaper rent in Home Park with the luxury amenities/higher costs of Midtown | I am sorry, but the provided documents do not contain enough information to answer this question. | Off-target | Inaccurate
 
-**Retrieval quality:** Relevant / Partially relevant / Off-target  
+**Retrieval quality:** Relevant / Partially relevant / Off-target
 **Response accuracy:** Accurate / Partially accurate / Inaccurate
 
 ---
